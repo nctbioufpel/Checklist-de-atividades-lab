@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checklist do Laboratório NCTBio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#161D47; --navy2:#232c66; --blue:#3D5A99; --sky:#E8EEF8; --sky2:#C9D6EE;
+  --teal:#3F8478; --teal-bg:#E3F1EE; --red:#B3261E; --red-bg:#FBE9E7; --amber:#9A6200; --amber-bg:#FFF4DC;
+  --gray:#5B6275; --line:#DDE2EC; --bg:#F5F7FB; --card:#fff; --ink:#1B1F2E;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Montserrat,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
+button,input,select,textarea{font:inherit}
+header.top{background:#fff;border-bottom:1px solid var(--line)}
+.brand{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:20px;padding:14px 20px}
+.brand .fo{height:78px;width:auto}
+.brand .nct{height:64px;width:auto;margin-left:auto}
+.brand h1{margin:0;font-size:22px;font-weight:800;color:var(--navy);letter-spacing:.2px;line-height:1.2}
+.brand p{margin:4px 0 0;color:var(--gray);font-size:13px;font-weight:500}
+nav.tabs{background:var(--navy)}
+nav.tabs .in{max-width:1180px;margin:0 auto;display:flex;gap:4px;padding:0 14px;overflow-x:auto}
+nav.tabs a{color:#C9D0EE;text-decoration:none;font-weight:600;font-size:14px;padding:13px 14px;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs a.on{color:#fff;border-bottom-color:#7FC4B6}
+nav.tabs a:hover{color:#fff}
+main{max-width:1180px;margin:0 auto;padding:20px}
+.banner{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(90deg,var(--sky) 0%,#fff 100%);border:1px solid var(--sky2);border-radius:12px;padding:14px 18px;margin-bottom:18px}
+.banner .big{font-size:17px;font-weight:700;color:var(--navy)}
+.banner .sub{color:var(--gray);font-size:13px}
+.banner.warn{background:linear-gradient(90deg,var(--amber-bg),#fff);border-color:#F1D7A0}
+.banner.ok{background:linear-gradient(90deg,var(--teal-bg),#fff);border-color:#B6DCD4}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;background:var(--sky);color:var(--navy)}
+.pill.amber{background:var(--amber-bg);color:var(--amber)}
+.pill.teal{background:var(--teal-bg);color:var(--teal)}
+.pill.red{background:var(--red-bg);color:var(--red)}
+.row-ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.row-ctrl label{font-size:13px;font-weight:600;color:var(--gray)}
+input[type=date],input[type=month],input[type=time],select,input[type=text],textarea{border:1px solid var(--line);border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink)}
+textarea{width:100%;resize:vertical;min-height:38px}
+.btn{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:8px;padding:7px 14px;font-weight:600;cursor:pointer}
+.btn:hover{background:var(--sky)}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+.btn.primary:hover{background:var(--navy2)}
+.btn.small{padding:4px 10px;font-size:13px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.grid2{display:grid;grid-template-columns:1fr;gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.card h2{margin:0;font-size:16px;font-weight:700;color:#fff;background:var(--blue);padding:12px 18px;display:flex;align-items:center;gap:10px}
+.card h2 .count{margin-left:auto;font-size:12px;font-weight:600;background:rgba(255,255,255,.18);padding:3px 10px;border-radius:999px}
+.card .note{padding:10px 18px;font-size:13px;color:var(--gray);border-bottom:1px solid var(--line);background:#FAFBFD}
+.task{display:grid;grid-template-columns:34px 1fr auto;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);align-items:start}
+.task:last-child{border-bottom:none}
+.task .n{width:30px;height:30px;border-radius:50%;background:var(--sky);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.task.done .n{background:var(--teal);color:#fff}
+.task.nc .n{background:var(--red);color:#fff}
+.task.na .n{background:#9AA1B2;color:#fff}
+.task .t{font-weight:600}
+.task .meta{font-size:12.5px;color:var(--gray);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.task .rec{margin-top:6px;font-size:13px}
+.task .rec b{color:var(--navy)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{border:none;background:#fff;padding:7px 11px;cursor:pointer;font-weight:700;color:var(--gray);border-right:1px solid var(--line);font-size:13px}
+.seg button:last-child{border-right:none}
+.seg button.s-ok.on{background:var(--teal);color:#fff}
+.seg button.s-nc.on{background:var(--red);color:#fff}
+.seg button.s-na.on{background:#7D8496;color:#fff}
+.seg button:hover:not(.on){background:var(--sky)}
+.form{grid-column:2 / 4;display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:start;background:#FAFBFD;border:1px dashed var(--sky2);border-radius:10px;padding:10px}
+.form .lbl{font-size:12px;font-weight:600;color:var(--gray);margin-bottom:3px}
+.form input{width:100%}
+.who{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:14px}
+.who label{font-weight:700;color:var(--navy);font-size:14px}
+.who .sub{color:var(--gray);font-size:12.5px}
+.who select,.who input{min-width:240px}
+.who.need{border-color:#F1D7A0;background:var(--amber-bg)}
+.err{color:var(--red);font-size:12.5px;font-weight:600}
+.ro{background:var(--amber-bg);border:1px solid #F1D7A0;color:var(--amber);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13.5px;font-weight:500}
+/* month grid */
+.mtable-wrap{overflow-x:auto}
+table.m{border-collapse:collapse;width:100%;font-size:12.5px}
+table.m th,table.m td{border:1px solid var(--line);text-align:center;padding:0;height:32px;min-width:28px}
+table.m th{background:var(--sky);color:var(--navy);font-weight:700;padding:4px}
+table.m th.act,table.m td.act{text-align:left;padding:6px 10px;min-width:230px;position:sticky;left:0;background:#fff;font-weight:600;z-index:1}
+table.m th.act{background:var(--sky)}
+table.m th.we,table.m td.we{background:#EEF0F4;color:#A0A6B4}
+table.m th.today{background:var(--navy);color:#fff}
+table.m td button{width:100%;height:100%;border:none;background:transparent;cursor:pointer;font-weight:800;font-size:14px;min-height:32px}
+table.m td.c-ok{background:var(--teal-bg)} table.m td.c-ok button{color:var(--teal)}
+table.m td.c-nc{background:var(--red-bg)} table.m td.c-nc button{color:var(--red)}
+table.m td.c-na button{color:#7D8496}
+table.m td.miss{background:repeating-linear-gradient(45deg,#fff,#fff 4px,#FFF4DC 4px,#FFF4DC 8px)}
+table.m td .ini{display:block;font-size:10px;font-weight:600;color:var(--gray)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--gray);padding:10px 18px;border-top:1px solid var(--line)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block;border:1px solid var(--line)}
+/* list */
+table.l{border-collapse:collapse;width:100%;font-size:13.5px}
+table.l th{background:var(--sky);color:var(--navy);text-align:left;padding:9px 12px;font-weight:700;font-size:12.5px}
+table.l td{border-top:1px solid var(--line);padding:9px 12px;vertical-align:top}
+.st{font-weight:700;white-space:nowrap}
+.st.ok{color:var(--teal)} .st.nc{color:var(--red)} .st.na{color:#7D8496}
+.empty{padding:28px;text-align:center;color:var(--gray)}
+/* reminders */
+.rem{padding:18px;display:grid;gap:16px}
+.rem h3{margin:0 0 6px;font-size:15px;color:var(--navy)}
+.rem p{margin:0;color:var(--gray);font-size:13.5px;line-height:1.55}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.step{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff}
+.step .k{width:28px;height:28px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;margin-bottom:8px}
+.step .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+a.btn{text-decoration:none;display:inline-block}
+.code{font-family:ui-monospace,monospace;font-size:12px;background:var(--sky);padding:8px 10px;border-radius:8px;word-break:break-all;color:var(--navy);margin-top:8px}
+/* dialog */
+.dlg-bg{position:fixed;inset:0;background:rgba(22,29,71,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.dlg-bg.on{display:flex}
+.dlg{background:#fff;border-radius:14px;max-width:460px;width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.dlg h3{margin:0;background:var(--navy);color:#fff;padding:12px 16px;font-size:15px}
+.dlg .b{padding:16px;font-size:14px;line-height:1.6}
+.dlg .f{padding:10px 16px;border-top:1px solid var(--line);text-align:right}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:10px;font-weight:600;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:60}
+.toast.on{opacity:1}
+footer{max-width:1180px;margin:10px auto 30px;padding:0 20px;color:var(--gray);font-size:12px;text-align:center}
+.hidden{display:none!important}
+@media (min-width:980px){ .grid2{grid-template-columns:1.25fr 1fr} }
+@media (max-width:640px){
+  .brand{flex-wrap:wrap;gap:10px}.brand .fo{height:56px}.brand .nct{height:40px;margin-left:0}
+  .brand h1{font-size:18px}
+  .task{grid-template-columns:30px 1fr}
+  .task .ctl{grid-column:1 / 3}
+  .form{grid-column:1 / 3;grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <img class="fo" src="img/logo-fo-ufpel.png" alt="Faculdade de Odontologia UFPel">
+    <div>
+      <h1>Checklist de Atividades do Laboratório</h1>
+      <p>Controle diário e semanal de equipamentos e atividades · NCTBio · FO-UFPel</p>
+    </div>
+    <img class="nct" src="img/logo-nctbio.png" alt="NCTBio – Núcleo de Biologia Celular e Tecidual">
+  </div>
+  <nav class="tabs"><div class="in">
+    <a href="#hoje" data-v="hoje">Registrar verificação</a>
+    <a href="#mensal" data-v="mensal">Controle mensal</a>
+    <a href="#historico" data-v="historico">Histórico</a>
+    <a href="#lembretes" data-v="lembretes">Lembretes</a>
+  </div></nav>
+</header>
+
+<main>
+  <div id="ro" class="ro hidden"></div>
+  <div class="who">
+    <label for="resp">Responsável pela verificação</label>
+    <select id="resp"><option value="">Selecione seu nome…</option></select>
+    <input type="text" id="respTxt" class="hidden" placeholder="Digite seu nome completo" maxlength="80">
+    <span class="sub" id="respHint">Seu nome fica salvo neste navegador.</span>
+    <button class="btn small" id="btnSync" style="margin-left:auto" title="Buscar registros novos">↻ Atualizar</button>
+  </div>
+  <div id="banner" class="banner"><div><div class="big">Carregando…</div><div class="sub">Conectando ao registro compartilhado do laboratório.</div></div></div>
+
+  <!-- HOJE -->
+  <section id="v-hoje">
+    <div class="row-ctrl">
+      <label for="dSel">Data da verificação</label>
+      <input type="date" id="dSel">
+      <button class="btn small" id="btnHoje">Hoje</button>
+      <span id="dInfo" class="pill"></span>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h2>Controle diário <span class="count" id="cntD"></span></h2>
+        <div class="note">Todos os dias úteis (segunda a sexta). Registre o valor lido quando houver e descreva qualquer não conformidade.</div>
+        <div id="listD"></div>
+      </div>
+      <div class="card">
+        <h2>Controle semanal <span class="count" id="cntS"></span></h2>
+        <div class="note" id="semInfo"></div>
+        <div id="listS"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENSAL -->
+  <section id="v-mensal" class="hidden">
+    <div class="row-ctrl">
+      <label for="mSel">Mês/ano</label>
+      <input type="month" id="mSel">
+      <button class="btn small" id="mPrev">‹ anterior</button>
+      <button class="btn small" id="mNext">próximo ›</button>
+      <button class="btn small" id="mCsv" style="margin-left:auto">Exportar mês (CSV)</button>
+    </div>
+    <div class="card" style="margin-bottom:18px">
+      <h2>Controle diário de equipamentos e atividades <span class="count" id="mTitleD"></span></h2>
+      <div class="mtable-wrap"><table class="m" id="gridD"></table></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--teal-bg)"></i>✓ Conforme / OK</span>
+        <span><i class="sw" style="background:var(--red-bg)"></i>✗ Não conforme</span>
+        <span><i class="sw"></i>— Não aplicável</span>
+        <span><i class="sw" style="background:repeating-linear-gradient(45deg,#fff,#fff 3px,#FFF4DC 3px,#FFF4DC 6px)"></i>Dia útil sem registro</span>
+        <span>• = há observação · iniciais = responsável · clique numa célula para ver detalhes</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Controle semanal de equipamentos e atividades</h2>
+      <div class="mtable-wrap"><table class="m" id="gridS"></table></div>
+    </div>
+  </section>
+
+  <!-- HISTÓRICO -->
+  <section id="v-historico" class="hidden">
+    <div class="row-ctrl">
+      <label for="hSel">Mês/ano</label>
+      <input type="month" id="hSel">
+      <label for="hPes">Responsável</label>
+      <select id="hPes"><option value="">Todos</option></select>
+      <label for="hSt">Situação</label>
+      <select id="hSt"><option value="">Todas</option><option value="ok">✓ Conforme</option><option value="nc">✗ Não conforme</option><option value="na">— Não aplicável</option></select>
+      <button class="btn small" id="hCsv" style="margin-left:auto">Exportar (CSV)</button>
+    </div>
+    <div class="card">
+      <h2>Registros <span class="count" id="hCount"></span></h2>
+      <div style="overflow-x:auto"><table class="l" id="hTable"></table></div>
+    </div>
+  </section>
+
+  <!-- LEMBRETES -->
+  <section id="v-lembretes" class="hidden">
+    <div class="card">
+      <h2>Lembrete diário (segunda a sexta)</h2>
+      <div class="rem">
+        <div class="step" style="border-color:#B6DCD4;background:var(--teal-bg)">
+          <h3>Lembrete automático por e-mail</h3>
+          <p>De segunda a sexta, a planilha envia um e-mail às pessoas cadastradas na aba <b>Equipe</b> com o que está pendente no dia (às terças inclui o pedido ao almoxarifado; às sextas, o descarte do resíduo do sugador). À tarde, se ainda houver pendências, um segundo aviso é enviado. Para entrar ou sair da lista, peça ao responsável pelo laboratório.</p>
+        </div>
+        <p>Quem quiser também pode colocar o lembrete na própria agenda (uma única vez; repete de segunda a sexta, com alerta e o link desta página):</p>
+        <div class="row-ctrl" style="margin:0">
+          <label for="rTime">Horário do lembrete</label>
+          <input type="time" id="rTime" value="08:30">
+          <span class="pill teal">Horário de Brasília</span>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="k">1</div>
+            <h3>Google Agenda</h3>
+            <p>Abre o Google Agenda com o evento recorrente já preenchido. Basta clicar em “Salvar”.</p>
+            <div class="acts"><a class="btn primary" id="gcal" href="#" target="_blank" rel="noopener">Adicionar ao Google Agenda</a></div>
+          </div>
+          <div class="step">
+            <div class="k">2</div>
+            <h3>Outlook, Apple ou celular</h3>
+            <p>Baixe o arquivo de agenda (.ics) e abra-o: o evento recorrente com alerta é importado automaticamente.</p>
+            <div class="acts"><button class="btn primary" id="ics">Baixar lembrete (.ics)</button></div>
+            <div class="err hidden" id="icsErr"></div>
+          </div>
+          <div class="step">
+            <div class="k">3</div>
+            <h3>Compartilhar com a equipe</h3>
+            <p>Envie o link desta página no grupo do laboratório para que todos registrem as verificações.</p>
+            <div class="acts"><button class="btn" id="copyLink">Copiar link</button></div>
+            <div class="code" id="linkTxt"></div>
+          </div>
+        </div>
+        <p>Além do lembrete na agenda, esta página mostra no topo o que ainda está pendente no dia e na semana, e o controle mensal marca os dias úteis sem registro.</p>
+      </div>
+    </div>
+  </section>
+</main>
+<footer>Laboratório NCTBio · Núcleo de Biologia Celular e Tecidual · Faculdade de Odontologia · Universidade Federal de Pelotas</footer>
+
+<div class="dlg-bg" id="dlg"><div class="dlg"><h3 id="dlgT"></h3><div class="b" id="dlgB"></div><div class="f"><button class="btn primary" id="dlgX">Fechar</button></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   CONFIGURAÇÃO — cole aqui a URL do App da Web do Apps Script
+   (Implantar > Nova implantação > App da Web > copiar URL que termina em /exec)
+   ===================================================================== */
+const API_URL = "COLE_AQUI_A_URL_DO_APPS_SCRIPT";
+
+const PAGE_URL = location.href.split("#")[0];
+const DIARIAS = [
+  {id:"d1", n:1, nome:"Verificação de CO₂ da INCUBADORA", un:"%"},
+  {id:"d2", n:2, nome:"Verificação de temperatura da INCUBADORA", un:"°C"},
+  {id:"d3", n:3, nome:"Verificação de CO₂ – REGULADOR DO CILINDRO", un:""},
+  {id:"d4", n:4, nome:"GELADEIRAS funcionando (verificar temperatura)", un:"°C"},
+  {id:"d5", n:5, nome:"Enxágue das vidrarias", un:null},
+  {id:"d6", n:6, nome:"Temperatura da ESTUFA DE SECAGEM", un:"°C"},
+];
+const SEMANAIS = [
+  {id:"s1", n:1, nome:"Verificação de nitrogênio nos botijões", dia:"Qualquer dia", wd:null},
+  {id:"s2", n:2, nome:"Água na incubadora", dia:"Qualquer dia", wd:null},
+  {id:"s3", n:3, nome:"Higienização do banho-maria", dia:"Qualquer dia", wd:null},
+  {id:"s4", n:4, nome:"Pedido ao almoxarifado", dia:"Terça-feira", wd:2},
+  {id:"s5", n:5, nome:"Descarte do resíduo de cultivo do sugador", dia:"Último dia da semana", wd:5},
+];
+const ST = {ok:{s:"✓",t:"Conforme"}, nc:{s:"✗",t:"Não conforme"}, na:{s:"—",t:"Não aplicável"}};
+const DOW = ["domingo","segunda-feira","terça-feira","quarta-feira","quinta-feira","sexta-feira","sábado"];
+const MES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+
+/* ---------- datas (horário local) ---------- */
+const pad = n => String(n).padStart(2,"0");
+const iso = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const parse = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y,m-1,d); };
+const monday = s => { const d = parse(s); const w = (d.getDay()+6)%7; d.setDate(d.getDate()-w); return iso(d); };
+const addDays = (s,n) => { const d = parse(s); d.setDate(d.getDate()+n); return iso(d); };
+const br = s => { const d = parse(s); return pad(d.getDate())+"/"+pad(d.getMonth()+1); };
+const brY = s => br(s)+"/"+s.slice(0,4);
+const todayIso = () => iso(new Date());
+const isWeekday = s => { const w = parse(s).getDay(); return w>=1 && w<=5; };
+const fmtTs = ts => { const d = new Date(ts); if (isNaN(d)) return ""; return pad(d.getDate())+"/"+pad(d.getMonth()+1)+"/"+d.getFullYear()+" "+pad(d.getHours())+":"+pad(d.getMinutes()); };
+const esc = s => String(s??"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $ = id => document.getElementById(id);
+const lsGet = k => { try { return localStorage.getItem(k); } catch(e){ return null; } };
+const lsSet = (k,v) => { try { localStorage.setItem(k,v); } catch(e){} };
+
+/* ---------- estado ---------- */
+const S = {
+  date: todayIso(), mes: todayIso().slice(0,7), hmes: todayIso().slice(0,7), view:"hoje",
+  months:{},        // "2026-11" -> array de registros (linhas da planilha)
+  loading:{}, equipe:[], resp: lsGet("nctbio_resp") || "",
+  drafts:{}, saving:{}, ready:false, error:null,
+};
+const configured = /^https:\/\/script\.google(usercontent)?\.com\//.test(API_URL);
+
+/* ---------- API (Google Apps Script) ---------- */
+async function apiGet(params){
+  const u = API_URL+"?"+new URLSearchParams(params).toString();
+  const r = await fetch(u, {method:"GET", redirect:"follow"});
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.erro||"Erro no servidor");
+  return j;
+}
+async function apiPost(body){
+  // text/plain evita a verificação CORS (preflight) que o Apps Script não suporta
+  const r = await fetch(API_URL, {method:"POST", redirect:"follow", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(body)});
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.erro||"Erro no servidor");
+  return j;
+}
+function neededMonths(){
+  const t = todayIso(); const set = new Set([t.slice(0,7), monday(t).slice(0,7)]);
+  if (S.view==="hoje"){ set.add(S.date.slice(0,7)); set.add(monday(S.date).slice(0,7)); }
+  if (S.view==="mensal") set.add(S.mes);
+  if (S.view==="historico") set.add(S.hmes);
+  return [...set];
+}
+async function loadMonths(force){
+  if (!configured) return;
+  const ms = neededMonths().filter(m => force || !S.months[m]);
+  if (!ms.length) return;
+  ms.forEach(m=>S.loading[m]=true);
+  try {
+    const j = await apiGet({acao:"dados", meses: ms.join(",")});
+    ms.forEach(m=>{ S.months[m] = []; });
+    (j.registros||[]).forEach(r=>{ (S.months[r.mes] ||= []).push(r); });
+    if (j.equipe) { S.equipe = j.equipe; renderEquipe(); }
+    S.ready = true; S.error = null;
+  } catch(e){
+    S.error = "Não foi possível acessar a planilha agora ("+(e.message||"erro de rede")+").";
+  }
+  ms.forEach(m=>delete S.loading[m]);
+  rebuild(); renderAll();
+}
+
+/* ---------- índice: último registro de cada atividade/período (+ alterações) ---------- */
+let IDX = {};
+const key = (tipo,per,tid) => tipo+"|"+per+"|"+tid;
+function rebuild(){
+  IDX = {};
+  Object.values(S.months).flat().sort((a,b)=>String(a.em).localeCompare(String(b.em))).forEach(r=>{
+    const k = key(r.tipo, r.periodo, r.tarefa);
+    const prev = IDX[k];
+    IDX[k] = Object.assign({}, r, {alteracoes: prev ? [...prev.alteracoes, prev] : []});
+  });
+}
+const rec = (tipo,per,tid) => IDX[key(tipo,per,tid)];
+function recsOfMonth(m){
+  return Object.values(IDX).filter(r=>r.mes===m);
+}
+
+/* ---------- UI helpers ---------- */
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("on"),2400); }
+function setBanner(kind,big,sub){ const b=$("banner"); b.className="banner"+(kind?" "+kind:""); b.innerHTML='<div><div class="big"></div><div class="sub"></div></div>'; b.querySelector(".big").textContent=big; b.querySelector(".sub").textContent=sub||""; }
+function dialog(title, html){ $("dlgT").textContent=title; $("dlgB").innerHTML=html; $("dlg").classList.add("on"); }
+$("dlgX").onclick = ()=>$("dlg").classList.remove("on");
+$("dlg").onclick = e=>{ if(e.target.id==="dlg") $("dlg").classList.remove("on"); };
+
+/* ---------- responsável ---------- */
+function renderEquipe(){
+  const sel = $("resp");
+  if (!S.equipe.length){ sel.classList.add("hidden"); $("respTxt").classList.remove("hidden"); $("respTxt").value = S.resp; return; }
+  sel.classList.remove("hidden"); $("respTxt").classList.add("hidden");
+  const names = [...S.equipe]; if (S.resp && !names.includes(S.resp)) names.push(S.resp);
+  sel.innerHTML = '<option value="">Selecione seu nome…</option>'+names.map(n=>'<option'+(n===S.resp?" selected":"")+'>'+esc(n)+'</option>').join("");
+  markWho();
+}
+function markWho(){ document.querySelector(".who").classList.toggle("need", !S.resp); }
+$("resp").addEventListener("change", e=>{ S.resp = e.target.value; lsSet("nctbio_resp", S.resp); markWho(); });
+$("respTxt").addEventListener("input", e=>{ S.resp = e.target.value.trim(); lsSet("nctbio_resp", S.resp); markWho(); });
+$("btnSync").onclick = ()=>{ loadMonths(true).then(()=>toast("Registros atualizados")); };
+
+/* ---------- navegação ---------- */
+function route(){
+  const v = (location.hash||"#hoje").slice(1);
+  S.view = ["hoje","mensal","historico","lembretes"].includes(v) ? v : "hoje";
+  document.querySelectorAll("nav.tabs a").forEach(a=>a.classList.toggle("on", a.dataset.v===S.view));
+  ["hoje","mensal","historico","lembretes"].forEach(k=>$("v-"+k).classList.toggle("hidden", k!==S.view));
+  renderAll(); loadMonths(false);
+}
+window.addEventListener("hashchange", route);
+
+/* ---------- faixa de pendências ---------- */
+function renderBanner(){
+  if (!configured){ setBanner("warn","Site ainda não conectado à planilha","Cole a URL do Apps Script na constante API_URL do arquivo index.html (veja o LEIAME)."); return; }
+  if (S.error){ setBanner("warn","Sem conexão com a planilha", S.error+" Tente “Atualizar”."); return; }
+  if (!S.ready){ setBanner("","Carregando…","Buscando os registros na planilha do laboratório."); return; }
+  const t = todayIso(), w = parse(t).getDay(), mon = monday(t);
+  const pendD = DIARIAS.filter(x=>!rec("d",t,x.id));
+  const pendS = SEMANAIS.filter(x=>!rec("s",mon,x.id));
+  const lbl = DOW[w].charAt(0).toUpperCase()+DOW[w].slice(1)+", "+brY(t);
+  if (w===0||w===6){
+    setBanner("", lbl+" · fim de semana", pendS.length ? pendS.length+" atividade(s) semanal(is) ficaram sem registro nesta semana." : "Todas as atividades semanais foram registradas nesta semana.");
+    return;
+  }
+  const extras = [];
+  if (w===2 && pendS.find(x=>x.id==="s4")) extras.push("hoje é dia do pedido ao almoxarifado");
+  if (w===5 && pendS.find(x=>x.id==="s5")) extras.push("hoje é dia do descarte do resíduo do sugador");
+  if (w===5 && pendS.length) extras.push("último dia útil para as atividades semanais");
+  if (!pendD.length && !pendS.length){ setBanner("ok", lbl+" · tudo em dia", "Todas as verificações diárias de hoje e as semanais desta semana foram registradas."); return; }
+  const parts = [];
+  parts.push(pendD.length ? pendD.length+" de "+DIARIAS.length+" verificações diárias pendentes hoje" : "verificações diárias de hoje concluídas");
+  if (pendS.length) parts.push(pendS.length+" atividade(s) semanal(is) pendente(s)");
+  setBanner(pendD.length?"warn":"", lbl+" · "+parts.join(" · "), extras.length ? "Atenção: "+extras.join("; ")+"." : "Registre cada verificação assim que concluí-la.");
+}
+
+/* ---------- registrar ---------- */
+function renderHoje(){
+  $("dSel").value = S.date;
+  const w = parse(S.date).getDay(), isT = S.date===todayIso();
+  $("dInfo").textContent = DOW[w]+(isT?" · hoje":"")+(w===0||w===6?" · fim de semana":"");
+  $("dInfo").className = "pill"+((w===0||w===6)?" amber":"");
+  const mon = monday(S.date);
+  $("semInfo").textContent = "Semana de "+br(mon)+" a "+br(addDays(mon,4))+". Cada atividade uma vez por semana, no dia previsto.";
+  $("listD").innerHTML = DIARIAS.map(x=>taskRow("d",x,S.date)).join("");
+  $("listS").innerHTML = SEMANAIS.map(x=>taskRow("s",x,mon)).join("");
+  $("cntD").textContent = DIARIAS.filter(x=>rec("d",S.date,x.id)).length+"/"+DIARIAS.length;
+  $("cntS").textContent = SEMANAIS.filter(x=>rec("s",mon,x.id)).length+"/"+SEMANAIS.length;
+}
+function taskRow(kind,x,per){
+  const k = key(kind,per,x.id), r = IDX[k], dr = S.drafts[k];
+  const cls = r ? (r.status==="ok"?"done":r.status==="nc"?"nc":"na") : "";
+  let meta = "";
+  if (kind==="s"){ const today = x.wd && parse(S.date).getDay()===x.wd; meta += '<span class="pill'+(today?" amber":"")+'">'+esc(x.dia)+(today?" · hoje":"")+'</span>'; }
+  if (kind==="d" && x.un!==null) meta += '<span class="pill">registrar leitura'+(x.un?" ("+esc(x.un)+")":"")+'</span>';
+  let info = "";
+  if (r){
+    info = '<div class="rec"><span class="st '+r.status+'">'+ST[r.status].s+" "+ST[r.status].t+'</span>'
+      +(r.leitura?' · leitura <b>'+esc(r.leitura)+'</b>':'')
+      +' · por <b>'+esc(r.responsavel)+'</b> em '+esc(fmtTs(r.em))
+      +(r.obs?'<div style="margin-top:3px;color:var(--gray)">Obs.: '+esc(r.obs)+'</div>':'')
+      +(r.alteracoes.length?'<div style="margin-top:3px;font-size:12px;color:var(--gray)">Alterado '+r.alteracoes.length+'x · <a href="#" data-cell="'+k+'">ver histórico</a></div>':'')
+      +'</div>';
+  }
+  const cur = dr ? dr.status : (r ? r.status : null);
+  const dis = configured ? "" : " disabled";
+  const ctl = '<div class="ctl"><div class="seg">'
+    +["ok","nc","na"].map(s=>'<button class="s-'+s+(cur===s?" on":"")+'" title="'+ST[s].t+'" data-pick="'+k+'|'+s+'"'+dis+'>'+ST[s].s+'</button>').join("")
+    +'</div></div>';
+  let form = "";
+  if (dr){
+    const hasL = kind==="d" && x.un!==null;
+    form = '<div class="form">'
+      +(hasL ? '<div><div class="lbl">Leitura'+(x.un?" ("+esc(x.un)+")":"")+'</div><input type="text" data-f="leitura" data-k="'+k+'" value="'+esc(dr.leitura||"")+'" placeholder="ex.: '+(x.un==="%"?"5,0":x.un==="°C"?"37,0":"valor")+'"></div>' : '<div></div>')
+      +'<div><div class="lbl">Observações'+(dr.status==="nc"?" (obrigatório para não conformidade)":"")+'</div><textarea data-f="obs" data-k="'+k+'" rows="1" placeholder="Opcional">'+esc(dr.obs||"")+'</textarea>'
+      +(dr.err?'<div class="err">'+esc(dr.err)+'</div>':'')+'</div>'
+      +'<div style="display:flex;gap:6px;padding-top:18px"><button class="btn primary small" data-save="'+k+'"'+(S.saving[k]?" disabled":"")+'>'+(S.saving[k]?"Salvando…":"Salvar")+'</button><button class="btn small" data-cancel="'+k+'">Cancelar</button></div>'
+      +'</div>';
+  }
+  return '<div class="task '+cls+'"><div class="n">'+x.n+'</div><div><div class="t">'+esc(x.nome)+'</div><div class="meta">'+meta+'</div>'+info+'</div>'+ctl+form+'</div>';
+}
+document.addEventListener("click", e=>{
+  const p = e.target.closest("[data-pick]");
+  if (p){
+    const parts = p.dataset.pick.split("|"); const s = parts.pop(); const k = parts.join("|");
+    const r = IDX[k], prev = S.drafts[k];
+    S.drafts[k] = {status:s, obs: prev?prev.obs:(r?r.obs||"":""), leitura: prev?prev.leitura:(r?r.leitura||"":"")};
+    renderHoje();
+    const f = document.querySelector('[data-k="'+k+'"]'); if (f) f.focus();
+    return;
+  }
+  const c = e.target.closest("[data-cancel]");
+  if (c){ delete S.drafts[c.dataset.cancel]; renderHoje(); return; }
+  const sv = e.target.closest("[data-save]");
+  if (sv){ save(sv.dataset.save); return; }
+  const cell = e.target.closest("[data-cell]");
+  if (cell){ e.preventDefault(); showCell(cell.dataset.cell); return; }
+});
+document.addEventListener("input", e=>{
+  const k = e.target.dataset && e.target.dataset.k; if (!k || !S.drafts[k]) return;
+  S.drafts[k][e.target.dataset.f] = e.target.value;
+});
+async function save(k){
+  const dr = S.drafts[k]; if (!dr || S.saving[k]) return;
+  if (!S.resp){ dr.err = "Selecione seu nome em “Responsável pela verificação” (no topo da página)."; renderHoje(); window.scrollTo({top:0,behavior:"smooth"}); return; }
+  if (dr.status==="nc" && !String(dr.obs||"").trim()){ dr.err="Descreva a não conformidade e a providência tomada."; renderHoje(); return; }
+  const [tipo, per, tid] = k.split("|");
+  const t = (tipo==="d"?DIARIAS:SEMANAIS).find(x=>x.id===tid);
+  const body = {
+    acao:"registrar", tipo, periodo: per, mes: per.slice(0,7), tarefa: tid, numero: t.n, atividade: t.nome,
+    status: dr.status, leitura: String(dr.leitura||"").trim().slice(0,40), obs: String(dr.obs||"").trim().slice(0,1000),
+    responsavel: S.resp.slice(0,80),
+  };
+  S.saving[k] = true; dr.err = null; renderHoje();
+  try {
+    const j = await apiPost(body);
+    const row = j.registro || Object.assign({em:new Date().toISOString()}, body);
+    (S.months[row.mes] ||= []).push(row);
+    rebuild(); delete S.drafts[k]; toast("Verificação registrada na planilha");
+  } catch(err){
+    dr.err = "Não foi possível salvar agora ("+(err.message||"erro de rede")+"). Tente novamente.";
+  }
+  S.saving[k] = false; renderAll();
+}
+function recHtml(r){
+  return '<div><b>Situação:</b> <span class="st '+r.status+'">'+ST[r.status].s+' '+ST[r.status].t+'</span></div>'
+    +(r.leitura?'<div><b>Leitura:</b> '+esc(r.leitura)+'</div>':'')
+    +'<div><b>Responsável:</b> '+esc(r.responsavel)+'</div>'
+    +'<div><b>Registrado em:</b> '+esc(fmtTs(r.em))+'</div>'
+    +(r.obs?'<div><b>Observações:</b> '+esc(r.obs)+'</div>':'');
+}
+function showCell(k){
+  const [tipo, per, tid] = k.split("|"); const r = IDX[k];
+  const t = (tipo==="d"?DIARIAS:SEMANAIS).find(x=>x.id===tid);
+  const titulo = t.nome+" · "+(tipo==="d" ? brY(per) : "semana de "+br(per));
+  if (!r){ dialog(titulo,'<p style="margin:0;color:var(--gray)">Sem registro.</p>'); return; }
+  let h = recHtml(r);
+  if (r.alteracoes.length) h += '<hr style="border:none;border-top:1px solid var(--line)"><div style="font-size:13px"><b>Registros anteriores</b>'+r.alteracoes.slice().reverse().map(a=>'<div style="margin-top:6px">'+ST[a.status].s+' '+ST[a.status].t+(a.leitura?' · '+esc(a.leitura):'')+' · '+esc(a.responsavel)+' · '+esc(fmtTs(a.em))+(a.obs?'<br><span style="color:var(--gray)">'+esc(a.obs)+'</span>':'')+'</div>').join("")+'</div>';
+  dialog(titulo,h);
+}
+
+/* ---------- controle mensal ---------- */
+const iniciais = n => { const p = String(n||"").trim().split(/\s+/).filter(Boolean); if(!p.length) return ""; return (p[0][0]+(p.length>1?p[p.length-1][0]:"")).toUpperCase(); };
+function monthDays(m){ const [y,mo] = m.split("-").map(Number); const n = new Date(y,mo,0).getDate(); return Array.from({length:n},(_,i)=>m+"-"+pad(i+1)); }
+function mondaysOf(m){ return monthDays(m).filter(s=>parse(s).getDay()===1); }
+function renderMensal(){
+  $("mSel").value = S.mes;
+  const [y,mo] = S.mes.split("-").map(Number);
+  $("mTitleD").textContent = MES[mo-1]+" / "+y + (S.loading[S.mes]?" · carregando…":"");
+  const days = monthDays(S.mes), t = todayIso(), loaded = !!S.months[S.mes];
+  let h = '<tr><th class="act">Nº · Verificação / Atividade</th>'+days.map(d=>{ const we=!isWeekday(d); return '<th class="'+(d===t?"today":we?"we":"")+'" title="'+DOW[parse(d).getDay()]+'">'+Number(d.slice(8))+'<br><span style="font-weight:500;font-size:10px">'+DOW[parse(d).getDay()].slice(0,3)+'</span></th>'; }).join("")+'</tr>';
+  DIARIAS.forEach(x=>{
+    h += '<tr><td class="act">'+x.n+'. '+esc(x.nome)+'</td>';
+    days.forEach(d=>{
+      const k = key("d",d,x.id), r = IDX[k];
+      if (r) h += '<td class="c-'+r.status+'"><button data-cell="'+k+'" title="'+esc(ST[r.status].t+" · "+r.responsavel+(r.leitura?" · "+r.leitura:"")+(r.obs?" · "+r.obs:""))+'">'+ST[r.status].s+(r.obs?"•":"")+'<span class="ini">'+esc(iniciais(r.responsavel))+'</span></button></td>';
+      else if (!isWeekday(d)) h += '<td class="we"></td>';
+      else if (loaded && d<t) h += '<td class="miss" title="Dia útil sem registro"></td>';
+      else h += '<td></td>';
+    });
+    h += '</tr>';
+  });
+  $("gridD").innerHTML = h;
+  const mons = mondaysOf(S.mes);
+  let s = '<tr><th class="act">Nº · Verificação / Atividade</th><th>Dia previsto</th>'+mons.map((m,i)=>'<th>Sem. '+(i+1)+'<br><span style="font-weight:500;font-size:11px">'+br(m)+'–'+br(addDays(m,4))+'</span></th>').join("")+'</tr>';
+  SEMANAIS.forEach(x=>{
+    s += '<tr><td class="act">'+x.n+'. '+esc(x.nome)+'</td><td style="padding:4px 8px;font-size:12px">'+esc(x.dia)+'</td>';
+    mons.forEach(m=>{
+      const k = key("s",m,x.id), r = IDX[k];
+      if (r) s += '<td class="c-'+r.status+'" style="min-width:110px"><button data-cell="'+k+'">'+ST[r.status].s+(r.obs?"•":"")+'<span class="ini" style="font-size:11px">'+esc(r.responsavel)+' · '+esc(fmtTs(r.em).slice(0,5))+'</span></button></td>';
+      else if (loaded && addDays(m,4)<t) s += '<td class="miss" style="min-width:110px" title="Semana sem registro"></td>';
+      else s += '<td style="min-width:110px"></td>';
+    });
+    s += '</tr>';
+  });
+  $("gridS").innerHTML = s;
+}
+
+/* ---------- histórico (todas as linhas, inclusive correções) ---------- */
+function histRows(m){
+  return (S.months[m]||[]).map(r=>{
+    const t = (r.tipo==="d"?DIARIAS:SEMANAIS).find(x=>x.id===r.tarefa); if (!t || !ST[r.status]) return null;
+    return {r,t,tipo:r.tipo==="d"?"Diária":"Semanal",perTxt:r.tipo==="d"?brY(r.periodo):"Semana "+br(r.periodo)+"–"+br(addDays(r.periodo,4)),k:key(r.tipo,r.periodo,r.tarefa)};
+  }).filter(Boolean).sort((a,b)=>String(b.r.em).localeCompare(String(a.r.em)));
+}
+function renderHist(){
+  $("hSel").value = S.hmes;
+  const all = histRows(S.hmes);
+  const pes = $("hPes"), cur = pes.value;
+  const names = [...new Set(all.map(x=>x.r.responsavel))].sort((a,b)=>a.localeCompare(b));
+  pes.innerHTML = '<option value="">Todos</option>'+names.map(u=>'<option'+(u===cur?" selected":"")+'>'+esc(u)+'</option>').join("");
+  const st = $("hSt").value;
+  const rows = all.filter(x=>(!pes.value||x.r.responsavel===pes.value)&&(!st||x.r.status===st));
+  $("hCount").textContent = S.loading[S.hmes] ? "carregando…" : rows.length+" registro(s)";
+  if (!rows.length){ $("hTable").innerHTML = '<tr><td class="empty">'+(S.months[S.hmes]?"Nenhum registro neste mês"+(pes.value||st?" com esses filtros":"")+".":"Carregando…")+'</td></tr>'; return; }
+  $("hTable").innerHTML = '<tr><th>Registrado em</th><th>Tipo</th><th>Data / semana</th><th>Atividade</th><th>Situação</th><th>Leitura</th><th>Responsável</th><th>Observações</th></tr>'
+    + rows.map(x=>{ const latest = IDX[x.k] && IDX[x.k].em===x.r.em; return '<tr'+(latest?'':' style="opacity:.6" title="Substituído por um registro posterior"')+'><td style="white-space:nowrap">'+esc(fmtTs(x.r.em))+'</td><td>'+x.tipo+'</td><td style="white-space:nowrap">'+esc(x.perTxt)+'</td><td>'+x.t.n+'. '+esc(x.t.nome)+'</td><td class="st '+x.r.status+'">'+ST[x.r.status].s+' '+ST[x.r.status].t+'</td><td>'+esc(x.r.leitura||"")+'</td><td><b>'+esc(x.r.responsavel)+'</b>'+(latest?'':' <span style="font-size:11px">(corrigido depois)</span>')+'</td><td>'+esc(x.r.obs||"")+'</td></tr>'; }).join("");
+}
+
+/* ---------- CSV e arquivos ---------- */
+function csvFor(m){
+  const q = v => '"'+String(v??"").replace(/"/g,'""')+'"';
+  const lines = [["Tipo","Data/Semana","Nº","Atividade","Situação","Leitura","Observações","Responsável","Registrado em"].map(q).join(";")];
+  recsOfMonth(m).map(r=>{ const t=(r.tipo==="d"?DIARIAS:SEMANAIS).find(x=>x.id===r.tarefa); return t&&ST[r.status] ? [r.tipo==="d"?"Diária":"Semanal", r.tipo==="d"?brY(r.periodo):"Semana de "+brY(r.periodo), t.n, t.nome, ST[r.status].t, r.leitura, r.obs, r.responsavel, fmtTs(r.em), r.periodo] : null; })
+    .filter(Boolean).sort((a,b)=>a[9].localeCompare(b[9])||a[0].localeCompare(b[0])||a[2]-b[2])
+    .forEach(r=>lines.push(r.slice(0,9).map(q).join(";")));
+  return "\ufeff"+lines.join("\r\n");
+}
+function download(filename, data, type){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([data],{type})); a.download = filename;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+$("mCsv").onclick = ()=>download("controle_lab_"+S.mes+".csv", csvFor(S.mes), "text/csv;charset=utf-8");
+$("hCsv").onclick = ()=>download("historico_lab_"+S.hmes+".csv", csvFor(S.hmes), "text/csv;charset=utf-8");
+
+/* ---------- lembretes na agenda ---------- */
+function remTimes(){
+  const [hh,mm] = ($("rTime").value||"08:30").split(":").map(Number);
+  let start = todayIso(); const w = parse(start).getDay();
+  if (w===0) start = addDays(start,1); if (w===6) start = addDays(start,2);
+  const d = parse(start); const utc = new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),hh+3,mm)); // Brasília = UTC-3
+  const end = new Date(utc.getTime()+15*60000);
+  const f = x => x.getUTCFullYear()+pad(x.getUTCMonth()+1)+pad(x.getUTCDate())+"T"+pad(x.getUTCHours())+pad(x.getUTCMinutes())+"00Z";
+  return {s:f(utc), e:f(end)};
+}
+const REM_TITLE = "Checklist do Laboratório NCTBio";
+const remText = () => "Registrar as verificações diárias do laboratório: "+DIARIAS.map(x=>x.nome).join("; ")+".\n\nSemanais: "+SEMANAIS.map(x=>x.nome+" ("+x.dia+")").join("; ")+".\n\nTerça: pedido ao almoxarifado. Sexta: descarte do resíduo do sugador.\n\nRegistrar em: "+PAGE_URL;
+function updateGcal(){
+  const t = remTimes();
+  $("gcal").href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(REM_TITLE)
+    +"&dates="+t.s+"/"+t.e+"&ctz=America/Sao_Paulo&recur="+encodeURIComponent("RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR")
+    +"&details="+encodeURIComponent(remText())+"&location="+encodeURIComponent("Laboratório NCTBio – FO-UFPel");
+}
+function icsText(){
+  const t = remTimes();
+  const escI = s => s.replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n");
+  const fold = l => { const out=[]; while(l.length>74){ out.push(l.slice(0,74)); l=" "+l.slice(74);} out.push(l); return out.join("\r\n"); };
+  const stamp = new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
+  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//NCTBio FO-UFPel//Checklist Lab//PT-BR","CALSCALE:GREGORIAN","METHOD:PUBLISH",
+    "BEGIN:VEVENT","UID:checklist-nctbio-"+t.s+"@fo-ufpel","DTSTAMP:"+stamp,"DTSTART:"+t.s,"DTEND:"+t.e,"RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR",
+    "SUMMARY:"+escI(REM_TITLE),"DESCRIPTION:"+escI(remText()),"URL:"+PAGE_URL,"LOCATION:"+escI("Laboratório NCTBio – FO-UFPel"),
+    "BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+escI("Fazer o checklist do laboratório"),"TRIGGER:PT0M","END:VALARM",
+    "END:VEVENT","END:VCALENDAR"].map(fold).join("\r\n")+"\r\n";
+}
+$("rTime").addEventListener("change", updateGcal);
+$("ics").onclick = ()=>download("lembrete_checklist_nctbio.ics", icsText(), "text/calendar;charset=utf-8");
+$("linkTxt").textContent = PAGE_URL;
+$("copyLink").onclick = async ()=>{ try{ await navigator.clipboard.writeText(PAGE_URL); toast("Link copiado"); } catch(e){ toast("Selecione o link abaixo e copie manualmente"); } };
+
+/* ---------- controles ---------- */
+const shiftM = (m,n)=>{ const [y,mo]=m.split("-").map(Number); const d=new Date(y,mo-1+n,1); return d.getFullYear()+"-"+pad(d.getMonth()+1); };
+const go = ()=>{ renderAll(); loadMonths(false); };
+$("dSel").addEventListener("change", e=>{ if(!e.target.value) return; S.date=e.target.value; S.drafts={}; go(); });
+$("btnHoje").onclick = ()=>{ S.date=todayIso(); S.drafts={}; go(); };
+$("mSel").addEventListener("change", e=>{ if(!e.target.value) return; S.mes=e.target.value; go(); });
+$("mPrev").onclick = ()=>{ S.mes=shiftM(S.mes,-1); go(); };
+$("mNext").onclick = ()=>{ S.mes=shiftM(S.mes,1); go(); };
+$("hSel").addEventListener("change", e=>{ if(!e.target.value) return; S.hmes=e.target.value; go(); });
+$("hPes").addEventListener("change", renderHist);
+$("hSt").addEventListener("change", renderHist);
+
+function renderAll(){
+  renderBanner();
+  if (S.view==="hoje") renderHoje();
+  if (S.view==="mensal") renderMensal();
+  if (S.view==="historico") renderHist();
+  if (S.view==="lembretes") updateGcal();
+}
+
+/* ---------- início ---------- */
+renderEquipe();
+route();
+updateGcal();
+// atualiza sozinho a cada 2 minutos e ao voltar para a aba
+setInterval(()=>{ if (!document.hidden) loadMonths(true); }, 120000);
+document.addEventListener("visibilitychange", ()=>{ if (!document.hidden) loadMonths(true); });
+</script>
+
+</body>
+</html>
