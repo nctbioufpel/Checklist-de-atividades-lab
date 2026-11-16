@@ -102,7 +102,7 @@ table.l{border-collapse:collapse;width:100%;font-size:13.5px}
 table.l th{background:var(--sky);color:var(--navy);text-align:left;padding:9px 12px;font-weight:700;font-size:12.5px}
 table.l td{border-top:1px solid var(--line);padding:9px 12px;vertical-align:top}
 .st{font-weight:700;white-space:nowrap}
-.st.ok{color:var(--teal)} .st.nc{color:var(--red)} .st.na{color:#7D8496}
+.st.rm{color:var(--amber)} .st.ok{color:var(--teal)} .st.nc{color:var(--red)} .st.na{color:#7D8496}
 .empty{padding:28px;text-align:center;color:var(--gray)}
 /* reminders */
 .rem{padding:18px;display:grid;gap:16px}
@@ -221,7 +221,7 @@ footer{max-width:1180px;margin:10px auto 30px;padding:0 20px;color:var(--gray);f
       <label for="hPes">Responsável</label>
       <select id="hPes"><option value="">Todos</option></select>
       <label for="hSt">Situação</label>
-      <select id="hSt"><option value="">Todas</option><option value="ok">✓ Conforme</option><option value="nc">✗ Não conforme</option><option value="na">— Não aplicável</option></select>
+      <select id="hSt"><option value="">Todas</option><option value="ok">✓ Conforme</option><option value="nc">✗ Não conforme</option><option value="na">— Não aplicável</option><option value="rm">↺ Registro limpo</option></select>
       <button class="btn small" id="hCsv" style="margin-left:auto">Exportar (CSV)</button>
     </div>
     <div class="card">
@@ -274,7 +274,7 @@ footer{max-width:1180px;margin:10px auto 30px;padding:0 20px;color:var(--gray);f
 </main>
 <footer>Laboratório NCTBio · Núcleo de Biologia Celular e Tecidual · Faculdade de Odontologia · Universidade Federal de Pelotas</footer>
 
-<div class="dlg-bg" id="dlg"><div class="dlg"><h3 id="dlgT"></h3><div class="b" id="dlgB"></div><div class="f"><button class="btn primary" id="dlgX">Fechar</button></div></div></div>
+<div class="dlg-bg" id="dlg"><div class="dlg"><h3 id="dlgT"></h3><div class="b" id="dlgB"></div><div class="f"><button class="btn" id="dlgA" style="background:var(--red);border-color:var(--red);color:#fff;margin-right:6px">Limpar</button><button class="btn primary" id="dlgX">Fechar</button></div></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -300,7 +300,7 @@ const SEMANAIS = [
   {id:"s4", n:4, nome:"Pedido ao almoxarifado", dia:"Terça-feira", wd:2},
   {id:"s5", n:5, nome:"Descarte do resíduo de cultivo do sugador", dia:"Último dia da semana", wd:5},
 ];
-const ST = {ok:{s:"✓",t:"Conforme"}, nc:{s:"✗",t:"Não conforme"}, na:{s:"—",t:"Não aplicável"}};
+const ST = {ok:{s:"✓",t:"Conforme"}, nc:{s:"✗",t:"Não conforme"}, na:{s:"—",t:"Não aplicável"}, rm:{s:"↺",t:"Registro limpo (voltou a pendente)"}};
 const DOW = ["domingo","segunda-feira","terça-feira","quarta-feira","quinta-feira","sexta-feira","sábado"];
 const MES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
 
@@ -379,6 +379,8 @@ function rebuild(){
     const prev = IDX[k];
     IDX[k] = Object.assign({}, r, {alteracoes: prev ? [...prev.alteracoes, prev] : []});
   });
+  // registro "limpo": a atividade volta a ficar pendente (o histórico continua na planilha)
+  Object.keys(IDX).forEach(k=>{ if (IDX[k].status==="rm") delete IDX[k]; });
 }
 const rec = (tipo,per,tid) => IDX[key(tipo,per,tid)];
 function recsOfMonth(m){
@@ -388,7 +390,7 @@ function recsOfMonth(m){
 /* ---------- UI helpers ---------- */
 function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("on"),2400); }
 function setBanner(kind,big,sub){ const b=$("banner"); b.className="banner"+(kind?" "+kind:""); b.innerHTML='<div><div class="big"></div><div class="sub"></div></div>'; b.querySelector(".big").textContent=big; b.querySelector(".sub").textContent=sub||""; }
-function dialog(title, html){ $("dlgT").textContent=title; $("dlgB").innerHTML=html; $("dlg").classList.add("on"); }
+function dialog(title, html, action){ $("dlgT").textContent=title; $("dlgB").innerHTML=html; const a=$("dlgA"); if(action){ a.textContent=action.label; a.onclick=()=>{ $("dlg").classList.remove("on"); action.fn(); }; a.classList.remove("hidden"); $("dlgX").textContent="Cancelar"; } else { a.classList.add("hidden"); $("dlgX").textContent="Fechar"; } $("dlg").classList.add("on"); }
 $("dlgX").onclick = ()=>$("dlg").classList.remove("on");
 $("dlg").onclick = e=>{ if(e.target.id==="dlg") $("dlg").classList.remove("on"); };
 
@@ -465,7 +467,9 @@ function taskRow(kind,x,per){
       +(r.leitura?' · leitura <b>'+esc(r.leitura)+'</b>':'')
       +' · por <b>'+esc(r.responsavel)+'</b> em '+esc(fmtTs(r.em))
       +(r.obs?'<div style="margin-top:3px;color:var(--gray)">Obs.: '+esc(r.obs)+'</div>':'')
-      +(r.alteracoes.length?'<div style="margin-top:3px;font-size:12px;color:var(--gray)">Alterado '+r.alteracoes.length+'x · <a href="#" data-cell="'+k+'">ver histórico</a></div>':'')
+      +'<div style="margin-top:3px;font-size:12px;color:var(--gray)">'
+      +(r.alteracoes.length?'Alterado '+r.alteracoes.length+'x · <a href="#" data-cell="'+k+'">ver histórico</a> · ':'')
+      +(configured?'<a href="#" data-clear="'+k+'" style="color:var(--red)">limpar registro</a>':'')+'</div>'
       +'</div>';
   }
   const cur = dr ? dr.status : (r ? r.status : null);
@@ -499,6 +503,8 @@ document.addEventListener("click", e=>{
   if (c){ delete S.drafts[c.dataset.cancel]; renderHoje(); return; }
   const sv = e.target.closest("[data-save]");
   if (sv){ save(sv.dataset.save); return; }
+  const cl = e.target.closest("[data-clear]");
+  if (cl){ e.preventDefault(); askClear(cl.dataset.clear); return; }
   const cell = e.target.closest("[data-cell]");
   if (cell){ e.preventDefault(); showCell(cell.dataset.cell); return; }
 });
@@ -528,6 +534,29 @@ async function save(k){
   }
   S.saving[k] = false; renderAll();
 }
+function askClear(k){
+  const [tipo, per, tid] = k.split("|"); const r = IDX[k]; if (!r) return;
+  const t = (tipo==="d"?DIARIAS:SEMANAIS).find(x=>x.id===tid);
+  if (!S.resp){ toast("Selecione seu nome em “Responsável” antes de limpar"); window.scrollTo({top:0,behavior:"smooth"}); return; }
+  dialog("Limpar registro",
+    '<p style="margin:0 0 8px"><b>'+esc(t.nome)+'</b><br>'+(tipo==="d"?brY(per):"Semana de "+br(per))+'</p>'
+    +'<p style="margin:0 0 8px">Registro atual: <span class="st '+r.status+'">'+ST[r.status].s+' '+ST[r.status].t+'</span>, por '+esc(r.responsavel)+'.</p>'
+    +'<p style="margin:0;color:var(--gray);font-size:13px">A atividade volta a aparecer como <b>pendente</b>. Na planilha, o registro antigo continua guardado, e uma linha nova indica quem limpou e quando.</p>',
+    {label:"Limpar registro", fn:()=>clearRec(k)});
+}
+async function clearRec(k){
+  const [tipo, per, tid] = k.split("|");
+  const t = (tipo==="d"?DIARIAS:SEMANAIS).find(x=>x.id===tid);
+  try {
+    const j = await apiPost({acao:"registrar", tipo, periodo: per, mes: per.slice(0,7), tarefa: tid, numero: t.n, atividade: t.nome,
+      status:"rm", leitura:"", obs:"", responsavel: S.resp.slice(0,80)});
+    const row = j.registro || {em:new Date().toISOString(), tipo, periodo:per, mes:per.slice(0,7), tarefa:tid, status:"rm", leitura:"", obs:"", responsavel:S.resp};
+    (S.months[row.mes] ||= []).push(row);
+    delete S.drafts[k]; rebuild(); renderAll(); toast("Registro limpo – atividade voltou a ficar pendente");
+  } catch(err){
+    toast("Não foi possível limpar ("+(err.message||"erro de rede")+")");
+  }
+}
 function recHtml(r){
   return '<div><b>Situação:</b> <span class="st '+r.status+'">'+ST[r.status].s+' '+ST[r.status].t+'</span></div>'
     +(r.leitura?'<div><b>Leitura:</b> '+esc(r.leitura)+'</div>':'')
@@ -542,7 +571,7 @@ function showCell(k){
   if (!r){ dialog(titulo,'<p style="margin:0;color:var(--gray)">Sem registro.</p>'); return; }
   let h = recHtml(r);
   if (r.alteracoes.length) h += '<hr style="border:none;border-top:1px solid var(--line)"><div style="font-size:13px"><b>Registros anteriores</b>'+r.alteracoes.slice().reverse().map(a=>'<div style="margin-top:6px">'+ST[a.status].s+' '+ST[a.status].t+(a.leitura?' · '+esc(a.leitura):'')+' · '+esc(a.responsavel)+' · '+esc(fmtTs(a.em))+(a.obs?'<br><span style="color:var(--gray)">'+esc(a.obs)+'</span>':'')+'</div>').join("")+'</div>';
-  dialog(titulo,h);
+  dialog(titulo,h, configured ? {label:"Limpar registro", fn:()=>askClear(k)} : null);
 }
 
 /* ---------- controle mensal ---------- */
@@ -600,7 +629,7 @@ function renderHist(){
   $("hCount").textContent = S.loading[S.hmes] ? "carregando…" : rows.length+" registro(s)";
   if (!rows.length){ $("hTable").innerHTML = '<tr><td class="empty">'+(S.months[S.hmes]?"Nenhum registro neste mês"+(pes.value||st?" com esses filtros":"")+".":"Carregando…")+'</td></tr>'; return; }
   $("hTable").innerHTML = '<tr><th>Registrado em</th><th>Tipo</th><th>Data / semana</th><th>Atividade</th><th>Situação</th><th>Leitura</th><th>Responsável</th><th>Observações</th></tr>'
-    + rows.map(x=>{ const latest = IDX[x.k] && IDX[x.k].em===x.r.em; return '<tr'+(latest?'':' style="opacity:.6" title="Substituído por um registro posterior"')+'><td style="white-space:nowrap">'+esc(fmtTs(x.r.em))+'</td><td>'+x.tipo+'</td><td style="white-space:nowrap">'+esc(x.perTxt)+'</td><td>'+x.t.n+'. '+esc(x.t.nome)+'</td><td class="st '+x.r.status+'">'+ST[x.r.status].s+' '+ST[x.r.status].t+'</td><td>'+esc(x.r.leitura||"")+'</td><td><b>'+esc(x.r.responsavel)+'</b>'+(latest?'':' <span style="font-size:11px">(corrigido depois)</span>')+'</td><td>'+esc(x.r.obs||"")+'</td></tr>'; }).join("");
+    + rows.map(x=>{ const latest = x.r.status==="rm" || (IDX[x.k] && IDX[x.k].em===x.r.em); return '<tr'+(latest?'':' style="opacity:.6" title="Substituído por um registro posterior"')+'><td style="white-space:nowrap">'+esc(fmtTs(x.r.em))+'</td><td>'+x.tipo+'</td><td style="white-space:nowrap">'+esc(x.perTxt)+'</td><td>'+x.t.n+'. '+esc(x.t.nome)+'</td><td class="st '+x.r.status+'">'+ST[x.r.status].s+' '+ST[x.r.status].t+'</td><td>'+esc(x.r.leitura||"")+'</td><td><b>'+esc(x.r.responsavel)+'</b>'+(latest?'':' <span style="font-size:11px">(substituído depois)</span>')+'</td><td>'+esc(x.r.obs||"")+'</td></tr>'; }).join("");
 }
 
 /* ---------- CSV e arquivos ---------- */
